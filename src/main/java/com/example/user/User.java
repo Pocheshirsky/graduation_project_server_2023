@@ -23,7 +23,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String middleName;
-    private String sex;
+    private String gender;
     private String email;
     private String phone;
     @JsonFormat(pattern="dd:MM:yyyy hh:mm")
@@ -80,12 +80,12 @@ public class User {
         this.middleName = middleName;
     }
 
-    public String getSex() {
-        return sex;
+    public String getGender() {
+        return gender;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getEmail() {
