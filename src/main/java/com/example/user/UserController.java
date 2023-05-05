@@ -1,22 +1,23 @@
 package com.example.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping("/")
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
-    }
+//    @PostMapping("/")
+//    public User createUser(@RequestBody User user) {
+//        return userService.createUser(user);
+//    }
 
     @GetMapping("/{uuid}")
     public User getUser(@PathVariable UUID uuid) {

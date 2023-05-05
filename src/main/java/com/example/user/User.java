@@ -1,17 +1,15 @@
 package com.example.user;
 
 
+import com.example.auth.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -29,26 +27,21 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
+    private Set<Role> roles;
+
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
-    public User(UUID uuid, String username, String email, String password) {
-        this.uuid = uuid;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
-
     public User() {
-
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.EMPTY_LIST;
+        return roles;
     }
 
     @Override
@@ -81,27 +74,5 @@ public class User implements UserDetails {
         return true;
     }
 
-    public UUID getUuid() {
-        return uuid;
-    }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

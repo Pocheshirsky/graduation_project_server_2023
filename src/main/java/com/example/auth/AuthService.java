@@ -1,4 +1,4 @@
-package com.example.rest;
+package com.example.auth;
 
 import com.example.dto.LoginDTO;
 import com.example.dto.SignupDTO;
@@ -17,16 +17,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 @RestController
-@RequestMapping("/api/auth")
-public class AuthREST {
+public class AuthService {
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
@@ -40,10 +37,21 @@ public class AuthREST {
     @Autowired
     UserService userService;
 
-    @PostMapping("/login")
-    @Transactional
-    public ResponseEntity<?> login(@RequestBody LoginDTO dto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
+    @PostConstruct
+    public void runAfterStartup() {
+        var user = userRepository.findByUsername("admin");
+        if (!user.isPresent()) {
+            var dto = new SignupDTO();
+            dto.setUsername("admin");
+            dto.setEmail("admin@test.ru");
+            dto.setPassword("123");
+            signup(dto,Arrays.asList(RoleType.ADMIN));
+        }
+    }
+
+    public ResponseEntity<?> login(LoginDTO dto) {
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
 
@@ -55,12 +63,22 @@ public class AuthREST {
         String refreshTokenString = jwtHelper.generateRefreshToken(user, refreshToken);
 
         return ResponseEntity.ok(new TokenDTO(user.getUuid().toString(), accessToken, refreshTokenString));
+
     }
 
-    @PostMapping("/signup")
-    @Transactional
-    public ResponseEntity<?> signup(@RequestBody SignupDTO dto) {
+    public ResponseEntity<?> signup(SignupDTO dto) {
+        return signup(dto, Arrays.asList(RoleType.USER));
+    }
+
+    public ResponseEntity<?> signup(SignupDTO dto, Collection<RoleType> roles) {
         User user = new User(dto.getUsername(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()));
+        Set<Role> set = new HashSet<>();
+        for (var role : roles) {
+            set.add(new Role() {{
+                setRoleType(role);
+            }});
+        }
+        user.setRoles(set);
         userRepository.save(user);
 
         RefreshToken refreshToken = new RefreshToken();
@@ -71,10 +89,10 @@ public class AuthREST {
         String refreshTokenString = jwtHelper.generateRefreshToken(user, refreshToken);
 
         return ResponseEntity.ok(new TokenDTO(user.getUuid().toString(), accessToken, refreshTokenString));
+
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody TokenDTO dto) {
+    public ResponseEntity<?> logout(TokenDTO dto) {
         String refreshTokenString = dto.getRefreshToken();
         if (jwtHelper.validateRefreshToken(refreshTokenString) && refreshTokenRepository.existsById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString))) {
             // valid and exists in db
@@ -83,10 +101,10 @@ public class AuthREST {
         }
 
         throw new BadCredentialsException("invalid token");
+
     }
 
-    @PostMapping("/logout-all")
-    public ResponseEntity<?> logoutAll(@RequestBody TokenDTO dto) {
+    public ResponseEntity<?> logoutAll(TokenDTO dto) {
         String refreshTokenString = dto.getRefreshToken();
         if (jwtHelper.validateRefreshToken(refreshTokenString) && refreshTokenRepository.existsById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString))) {
             // valid and exists in db
@@ -96,13 +114,12 @@ public class AuthREST {
         }
 
         throw new BadCredentialsException("invalid token");
+
     }
 
-    @PostMapping("/access-token")
-    public ResponseEntity<?> accessToken(@RequestBody TokenDTO dto) {
+    public ResponseEntity<?> accessToken(TokenDTO dto) {
         String refreshTokenString = dto.getRefreshToken();
         if (jwtHelper.validateRefreshToken(refreshTokenString) && refreshTokenRepository.existsById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString))) {
-            // valid and exists in db
 
             User user = userService.getUser(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
             String accessToken = jwtHelper.generateAccessToken(user);
@@ -111,10 +128,10 @@ public class AuthREST {
         }
 
         throw new BadCredentialsException("invalid token");
+
     }
 
-    @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@RequestBody TokenDTO dto) {
+    public ResponseEntity<?> refreshToken(TokenDTO dto) {
         String refreshTokenString = dto.getRefreshToken();
         if (jwtHelper.validateRefreshToken(refreshTokenString) && refreshTokenRepository.existsById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString))) {
             // valid and exists in db
@@ -134,5 +151,6 @@ public class AuthREST {
         }
 
         throw new BadCredentialsException("invalid token");
+
     }
 }
