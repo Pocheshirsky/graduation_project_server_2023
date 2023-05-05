@@ -2,7 +2,7 @@ package com.example.user;
 
 
 import com.example.auth.Role;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,16 +23,14 @@ public class User implements UserDetails {
 
     private String username;
 
-    private String email;
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    public User(String username, String email, String password) {
+    public User(String username, String password) {
         this.username = username;
-        this.email = email;
         this.password = password;
     }
 

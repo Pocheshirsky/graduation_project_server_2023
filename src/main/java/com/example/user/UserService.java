@@ -24,7 +24,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUser(UUID userUUID) {
-        return userRepository.findById(userUUID).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(userUUID).orElseThrow(() -> new RuntimeException("User "+userUUID+" not found"));
     }
 
     public void deleteUser(UUID userUUID) {

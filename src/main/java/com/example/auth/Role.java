@@ -1,5 +1,6 @@
 package com.example.auth;
 
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity
+@ToString
 @Table(name = "user_roles")
 public class Role implements GrantedAuthority {
 

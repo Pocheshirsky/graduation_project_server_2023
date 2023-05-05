@@ -1,7 +1,8 @@
 package com.example.user;
 
+import com.example.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -14,11 +15,18 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthService authService;
+
 //    @PostMapping("/")
 //    public User createUser(@RequestBody User user) {
 //        return userService.createUser(user);
 //    }
 
+    @PostMapping("/")
+    public ResponseEntity<?> changeUSerInfo(@RequestBody User user){
+        return authService.changeUserInfo(user);
+    }
     @GetMapping("/{uuid}")
     public User getUser(@PathVariable UUID uuid) {
         return userService.getUser(uuid);
@@ -36,6 +44,6 @@ public class UserController {
 
     @GetMapping("/test")
     public String test() {
-        return "hne";
+        throw new RuntimeException("fdf");
     }
 }
