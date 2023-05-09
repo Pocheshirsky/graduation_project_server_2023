@@ -1,16 +1,16 @@
 package com.example.auth;
 
-import com.example.dto.LoginDTO;
-import com.example.dto.SignupDTO;
 import com.example.dto.TokenDTO;
+import com.example.dto.UserDTO;
 import com.example.jwt.JwtHelper;
 import com.example.token.RefreshToken;
 import com.example.token.RefreshTokenRepository;
 import com.example.user.User;
+import com.example.user.UserInfo;
 import com.example.user.UserRepository;
 import com.example.user.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
@@ -29,17 +28,19 @@ import java.util.*;
 @RestController
 public class AuthService {
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
     @Autowired
-    RefreshTokenRepository refreshTokenRepository;
+    private RefreshTokenRepository refreshTokenRepository;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    JwtHelper jwtHelper;
+    private JwtHelper jwtHelper;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
-    UserService userService;
+    private UserService userService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private Environment env;
@@ -48,7 +49,7 @@ public class AuthService {
     public void runAfterStartup() {
         var user = userRepository.findByUsername("admin");
         if (!user.isPresent()) {
-            var dto = new SignupDTO();
+            var dto = new UserDTO();
             dto.setUsername(env.getProperty("admin.username"));
             dto.setPassword(env.getProperty("admin.password"));
             signup(dto, Arrays.asList(RoleType.ADMIN));
@@ -56,7 +57,7 @@ public class AuthService {
     }
 
     @Transactional
-    public ResponseEntity<?> login(LoginDTO dto) {
+    public ResponseEntity<?> login(UserDTO dto) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -69,26 +70,28 @@ public class AuthService {
         String accessToken = jwtHelper.generateAccessToken(user);
         String refreshTokenString = jwtHelper.generateRefreshToken(user, refreshToken);
 
-        return ResponseEntity.ok(new TokenDTO(user.getRoles().toString(), accessToken, refreshTokenString));
+        return ResponseEntity.ok(new TokenDTO(modelMapper.map(user,UserDTO.class), accessToken, refreshTokenString));
 
     }
 
-    public ResponseEntity<?> changeUserInfo(User user) {
+    public ResponseEntity<?> changeUserInfo(UserDTO user) {
         if (user.getUuid() == null)
             throw new RuntimeException("user uuid is empty");
         var usr = userService.getUser(user.getUuid());
         if (user.getPassword() != null)
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return ResponseEntity.ok(userRepository.save(user));
+        if(user.getUserInfo()!=null)
+            usr.setUserInfo(modelMapper.map(user.getUserInfo(), UserInfo.class));
+        return ResponseEntity.ok(userRepository.save(usr));
     }
 
     @Transactional
-    public ResponseEntity<?> signup(SignupDTO dto) {
+    public ResponseEntity<?> signup(UserDTO dto) {
         return signup(dto, Arrays.asList(RoleType.USER));
     }
 
     @Transactional
-    public ResponseEntity<?> signup(SignupDTO dto, Collection<RoleType> roles) {
+    public ResponseEntity<?> signup(UserDTO dto, Collection<RoleType> roles) {
         Optional<User> usr = userRepository.findByUsername(dto.getUsername());
         if (usr.isPresent()) {
             throw new RuntimeException("User '" + dto.getUsername() + "' alredy exist");
@@ -110,7 +113,7 @@ public class AuthService {
         String accessToken = jwtHelper.generateAccessToken(user);
         String refreshTokenString = jwtHelper.generateRefreshToken(user, refreshToken);
 
-        return ResponseEntity.ok(new TokenDTO(user.getUuid().toString(), accessToken, refreshTokenString));
+        return ResponseEntity.ok(new TokenDTO(modelMapper.map(user,UserDTO.class), accessToken, refreshTokenString));
 
     }
 
@@ -148,7 +151,7 @@ public class AuthService {
             User user = userService.getUser(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
             String accessToken = jwtHelper.generateAccessToken(user);
 
-            return ResponseEntity.ok(new TokenDTO(user.getUuid().toString(), accessToken, refreshTokenString));
+            return ResponseEntity.ok(new TokenDTO(modelMapper.map(user,UserDTO.class), accessToken, refreshTokenString));
         }
 
         throw new BadCredentialsException("invalid token");
@@ -171,7 +174,7 @@ public class AuthService {
             String accessToken = jwtHelper.generateAccessToken(user);
             String newRefreshTokenString = jwtHelper.generateRefreshToken(user, refreshToken);
 
-            return ResponseEntity.ok(new TokenDTO(user.getUuid().toString(), accessToken, newRefreshTokenString));
+            return ResponseEntity.ok(new TokenDTO(modelMapper.map(user,UserDTO.class), accessToken, newRefreshTokenString));
         }
 
         throw new BadCredentialsException("invalid token");

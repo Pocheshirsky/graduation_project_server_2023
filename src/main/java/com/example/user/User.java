@@ -29,6 +29,9 @@ public class User implements UserDetails {
     @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
     private Set<Role> roles;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private UserInfo userInfo;
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;

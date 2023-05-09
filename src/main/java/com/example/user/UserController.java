@@ -1,10 +1,15 @@
 package com.example.user;
 
 import com.example.auth.AuthService;
+import com.example.dto.UserDTO;
+import org.modelmapper.Converter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.UUID;
 
 @CrossOrigin
@@ -18,15 +23,12 @@ public class UserController {
     @Autowired
     private AuthService authService;
 
-//    @PostMapping("/")
-//    public User createUser(@RequestBody User user) {
-//        return userService.createUser(user);
-//    }
 
     @PostMapping("/")
-    public ResponseEntity<?> changeUSerInfo(@RequestBody User user){
+    public ResponseEntity<?> changeUSerInfo(@RequestBody UserDTO user) {
         return authService.changeUserInfo(user);
     }
+
     @GetMapping("/{uuid}")
     public User getUser(@PathVariable UUID uuid) {
         return userService.getUser(uuid);
@@ -42,8 +44,14 @@ public class UserController {
         userService.deleteUser(uuid);
     }
 
-    @GetMapping("/test")
-    public String test() {
-        throw new RuntimeException("fdf");
+    @PostMapping("/test")
+    public String test(@RequestBody UserDTO dto) {
+
+        return "sd";
+    }
+
+    @GetMapping("/userinfo")
+    private ResponseEntity<?> getUserInfo(){
+        return userService.getUserInfo();
     }
 }

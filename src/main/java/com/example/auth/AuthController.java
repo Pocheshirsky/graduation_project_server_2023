@@ -1,27 +1,10 @@
 package com.example.auth;
 
-import com.example.dto.LoginDTO;
-import com.example.dto.SignupDTO;
 import com.example.dto.TokenDTO;
-import com.example.jwt.JwtHelper;
-import com.example.token.RefreshToken;
-import com.example.token.RefreshTokenRepository;
-import com.example.user.User;
-import com.example.user.UserRepository;
-import com.example.user.UserService;
+import com.example.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.PostConstruct;
-import java.util.Set;
 
 
 @RestController
@@ -32,12 +15,12 @@ public class AuthController {
     AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO dto) {
+    public ResponseEntity<?> login(@RequestBody UserDTO dto) {
         return authService.login(dto);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupDTO dto) {
+    public ResponseEntity<?> signup(@RequestBody UserDTO dto) {
         return authService.signup(dto);
     }
 
