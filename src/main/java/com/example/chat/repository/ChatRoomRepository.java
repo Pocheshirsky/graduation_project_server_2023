@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface ChatRoomRepository extends CrudRepository<ChatRoom, UUID> {
-    Optional<ChatRoom> findBySenderUuidAndRecipientUuid(UUID senderId, UUID recipientId);
+    Optional<ChatRoom> findBySenderUuidAndRecipientUuid(UUID senderUuid, UUID recipientUuid);
 }

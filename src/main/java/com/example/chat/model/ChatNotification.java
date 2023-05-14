@@ -8,6 +8,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 public class ChatNotification {
+
     private UUID id;
     private UUID senderUuid;
     private String senderName;
