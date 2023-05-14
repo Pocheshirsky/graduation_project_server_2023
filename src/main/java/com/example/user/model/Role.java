@@ -1,12 +1,9 @@
-package com.example.auth;
+package com.example.user.model;
 
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -17,18 +14,15 @@ public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue
     UUID uuid;
-    String roleType;
+    @Enumerated(EnumType.STRING)
+    RoleType roleType;
 
     @Override
     public String getAuthority() {
-        return roleType;
-    }
-
-    public RoleType getRoleType() {
-        return RoleType.valueOf(roleType);
+        return roleType.name();
     }
 
     public void setRoleType(RoleType roleType) {
-        this.roleType = roleType.name();
+        this.roleType = roleType;
     }
 }

@@ -1,15 +1,13 @@
-package com.example.user;
+package com.example.user.controller;
 
-import com.example.auth.AuthService;
-import com.example.dto.UserDTO;
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
+import com.example.user.service.AuthService;
+import com.example.user.dto.UserDTO;
+import com.example.user.model.User;
+import com.example.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import java.util.UUID;
 
 @CrossOrigin
@@ -46,8 +44,8 @@ public class UserController {
 
     @PostMapping("/test")
     public String test(@RequestBody UserDTO dto) {
-
-        return "sd";
+        throw new RuntimeException("HWHWHWHW");
+//        return "sd";
     }
 
     @GetMapping("/userinfo")

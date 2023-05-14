@@ -1,14 +1,15 @@
-package com.example.auth;
+package com.example.user.service;
 
-import com.example.dto.TokenDTO;
-import com.example.dto.UserDTO;
+import com.example.user.model.Role;
+import com.example.user.model.RoleType;
+import com.example.user.dto.TokenDTO;
+import com.example.user.dto.UserDTO;
 import com.example.jwt.JwtHelper;
-import com.example.token.RefreshToken;
-import com.example.token.RefreshTokenRepository;
-import com.example.user.User;
-import com.example.user.UserInfo;
-import com.example.user.UserRepository;
-import com.example.user.UserService;
+import com.example.token.model.RefreshToken;
+import com.example.token.repository.RefreshTokenRepository;
+import com.example.user.model.User;
+import com.example.user.model.UserInfo;
+import com.example.user.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;

@@ -1,6 +1,6 @@
-package com.example.dto;
+package com.example.user.dto;
 
-import com.example.auth.Role;
+import com.example.user.model.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;

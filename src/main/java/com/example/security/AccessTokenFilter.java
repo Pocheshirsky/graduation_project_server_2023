@@ -1,8 +1,8 @@
 package com.example.security;
 
 import com.example.jwt.JwtHelper;
-import com.example.user.User;
-import com.example.user.UserService;
+import com.example.user.model.User;
+import com.example.user.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

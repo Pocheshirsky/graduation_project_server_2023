@@ -1,6 +1,6 @@
-package com.example.token;
+package com.example.token.model;
 
-import com.example.user.User;
+import com.example.user.model.User;
 import lombok.Data;
 
 import javax.persistence.Entity;
