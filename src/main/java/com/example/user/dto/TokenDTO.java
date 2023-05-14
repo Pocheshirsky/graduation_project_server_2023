@@ -1,5 +1,6 @@
-package com.example.dto;
+package com.example.user.dto;
 
+import com.example.user.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

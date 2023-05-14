@@ -1,5 +1,6 @@
-package com.example.token;
+package com.example.token.repository;
 
+import com.example.token.model.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,8 @@
-package com.example.auth;
+package com.example.user.controller;
 
-import com.example.dto.TokenDTO;
-import com.example.dto.UserDTO;
+import com.example.user.service.AuthService;
+import com.example.user.dto.TokenDTO;
+import com.example.user.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

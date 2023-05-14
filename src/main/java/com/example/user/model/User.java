@@ -1,7 +1,6 @@
-package com.example.user;
+package com.example.user.model;
 
 
-import com.example.auth.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
