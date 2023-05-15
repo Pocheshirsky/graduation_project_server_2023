@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import java.util.UUID;
 
 @Entity
@@ -18,4 +19,6 @@ public class UserInfo {
     private String name;
 
     private int age;
+
+    private String avatar;
 }

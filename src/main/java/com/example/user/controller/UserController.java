@@ -7,6 +7,7 @@ import com.example.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -49,7 +50,13 @@ public class UserController {
     }
 
     @GetMapping("/userinfo")
-    private ResponseEntity<?> getUserInfo(){
+    public ResponseEntity<?> getUserInfo(){
         return userService.getUserInfo();
     }
+
+    @GetMapping("/avatar")
+    public ResponseEntity<?> getUserAvatar() { return userService.getUserAvatar(); }
+
+    @PostMapping("/avatar")
+    public ResponseEntity<?> setUserAvatar(@RequestBody MultipartFile file) { return userService.setUserAvatar(file); }
 }
