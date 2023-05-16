@@ -1,11 +1,10 @@
 package com.example.user.model;
 
+import com.example.user.service.StringListConverter;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,4 +20,7 @@ public class UserInfo {
     private int age;
 
     private String avatar;
+
+    @Convert(converter = StringListConverter.class)
+    private List<String> hehe;
 }
