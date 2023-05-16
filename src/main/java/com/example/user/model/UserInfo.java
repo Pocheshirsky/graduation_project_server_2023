@@ -17,10 +17,27 @@ public class UserInfo {
 
     private String name;
 
+    private String firstName;
+    private String lastName;
+    private String gender;
     private int age;
 
-    private String avatar;
+    @Convert(converter = StringListConverter.class)
+    private List<String> interests;
+
+    private String locality;
+    private int growth;
+    private int interestedGrowth;
+    private String familyView;
+    private String religion;
+    private String religionImportance;
+    private String searchTarget;
 
     @Convert(converter = StringListConverter.class)
-    private List<String> hehe;
+    private List<String> characterAccentuations;
+
+    @Convert(converter = StringListConverter.class)
+    private List<String> interestedCharacterAccentuations;
+
+    private String avatar;
 }
