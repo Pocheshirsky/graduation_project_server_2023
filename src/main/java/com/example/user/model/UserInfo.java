@@ -26,11 +26,7 @@ public class UserInfo {
     private List<String> interests;
 
     private String locality;
-
-    @Column(columnDefinition = "integer default 0")
     private int growth;
-
-    @Column(columnDefinition = "integer default 0")
     private int interestedGrowth;
 
     private String familyView;
