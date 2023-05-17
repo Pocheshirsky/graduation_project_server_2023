@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,12 +32,16 @@ public class ChatController {
 
     @MessageMapping("/chat")
     public void processMessage(@Payload ChatMessage chatMessage) {
-//        var chatId = chatRoomService.getChatUuid(chatMessage.getSenderUuid(), chatMessage.getRecipientUuid(), true);
-//        chatMessage.setChatUuid(chatId.get());
-//        messagingTemplate.convertAndSend("/queue/messages","dfdfdf");
-//        ChatMessage saved = chatMessageService.save(chatMessage);
-        messagingTemplate.convertAndSendToUser(chatMessage.getSenderUuid().toString(),
-                "/queue/messages",chatMessage.getContent());
+        var chatId = chatRoomService.getChatUuid(chatMessage.getSenderUuid(), chatMessage.getRecipientUuid(), true);
+        chatMessage.setChatUuid(chatId.get());
+        ChatMessage saved = chatMessageService.save(chatMessage);
+        messagingTemplate.convertAndSendToUser(chatMessage.getRecipientUuid().toString(),
+                "/queue/messages", chatMessage.getContent());
+    }
+
+    @GetMapping("/chat/{text}")
+    public void processMesssage(@PathVariable String text) {
+        messagingTemplate.convertAndSend("/user/hne", text);
     }
 
     @GetMapping("/messages/{senderUuid}/{recipientUuid}/count")

@@ -16,7 +16,6 @@ import java.util.UUID;
 public interface ChatMessageRepository extends CrudRepository<ChatMessage, UUID> {
 
     long countBySenderUuidAndRecipientUuidAndStatus(UUID senderUuid, UUID recipientId, MessageStatus status);
-//    void update
 
     List<ChatMessage> findByChatUuid(String chatUuid);
 

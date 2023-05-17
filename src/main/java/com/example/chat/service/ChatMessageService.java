@@ -32,7 +32,7 @@ public class ChatMessageService {
     }
 
     public List<ChatMessage> findChatMessages(UUID senderUuid, UUID recipientUuid) {
-        var chatUuid = chatRoomService.getChatUuid(senderUuid, recipientUuid, false);
+        var chatUuid = chatRoomService.getChatUuid(senderUuid, recipientUuid, false); //TODO: возможно переделать на true!!!!!!!
 
         var messages =
                 chatUuid.map(cId -> chatMessageRepository.findByChatUuid(cId)).orElse(new ArrayList<>());

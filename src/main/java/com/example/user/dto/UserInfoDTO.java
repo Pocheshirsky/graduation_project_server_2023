@@ -27,5 +27,5 @@ public class UserInfoDTO {
     private String searchTarget;
     private List<String> characterAccentuations;
     private List<String> interestedCharacterAccentuations;
-    //private String avatar;
+    private String avatar;
 }
