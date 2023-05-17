@@ -31,6 +31,10 @@ public class ChatMessageService {
                 senderUuid, recipientUuid, MessageStatus.RECEIVED);
     }
 
+    public List<UUID> findUserChats(UUID senderUuid){
+        return chatRoomService.findUserChats(senderUuid);
+    }
+
     public List<ChatMessage> findChatMessages(UUID senderUuid, UUID recipientUuid) {
         var chatUuid = chatRoomService.getChatUuid(senderUuid, recipientUuid, false); //TODO: возможно переделать на true!!!!!!!
 

@@ -2,16 +2,13 @@ package com.example.chat.controller;
 
 
 import com.example.chat.model.ChatMessage;
-import com.example.chat.model.ChatNotification;
 import com.example.chat.service.ChatMessageService;
 import com.example.chat.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,5 +54,10 @@ public class ChatController {
     @GetMapping("/messages/{messageUuid}")
     public ResponseEntity<?> findMessage(@PathVariable UUID messageUuid) {
         return ResponseEntity.ok(chatMessageService.findById(messageUuid));
+    }
+
+    @GetMapping("/messages/chat/{senderUuid}")
+    public ResponseEntity<?> findUserChats(@PathVariable UUID senderUuid) {
+        return ResponseEntity.ok(chatMessageService.findUserChats(senderUuid));
     }
 }
