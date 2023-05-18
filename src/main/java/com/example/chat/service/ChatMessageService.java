@@ -4,6 +4,7 @@ package com.example.chat.service;
 import com.example.chat.model.ChatMessage;
 import com.example.chat.model.MessageStatus;
 import com.example.chat.repository.ChatMessageRepository;
+import com.example.user.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +32,14 @@ public class ChatMessageService {
                 senderUuid, recipientUuid, MessageStatus.RECEIVED);
     }
 
-    public List<UUID> findUserChats(UUID senderUuid){
+    public List<UserDTO> findUserChats(UUID senderUuid){
         return chatRoomService.findUserChats(senderUuid);
     }
+
+//    @Scheduled(fixedDelay = 100_000)
+//    public void getHne(){
+//        System.err.println("hne");
+//    }
 
     public List<ChatMessage> findChatMessages(UUID senderUuid, UUID recipientUuid) {
         var chatUuid = chatRoomService.getChatUuid(senderUuid, recipientUuid, false); //TODO: возможно переделать на true!!!!!!!

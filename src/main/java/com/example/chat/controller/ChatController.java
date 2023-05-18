@@ -9,15 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @CrossOrigin
 @RestController
+@RequestMapping("/api")
 public class ChatController {
 
     @Autowired
@@ -32,7 +30,7 @@ public class ChatController {
         var chatId = chatRoomService.getChatUuid(chatMessage.getSenderUuid(), chatMessage.getRecipientUuid(), true);
         chatMessage.setChatUuid(chatId.get());
         ChatMessage saved = chatMessageService.save(chatMessage);
-        messagingTemplate.convertAndSendToUser(chatMessage.getRecipientUuid().toString(),
+        messagingTemplate.convertAndSendToUser(saved.getRecipientUuid().toString(),
                 "/queue/messages", chatMessage.getContent());
     }
 
