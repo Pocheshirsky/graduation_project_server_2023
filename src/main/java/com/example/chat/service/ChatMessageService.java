@@ -41,6 +41,7 @@ public class ChatMessageService {
 //        System.err.println("hne");
 //    }
 
+    @Transactional
     public List<ChatMessage> findChatMessages(UUID senderUuid, UUID recipientUuid) {
         var chatUuid = chatRoomService.getChatUuid(senderUuid, recipientUuid, false); //TODO: возможно переделать на true!!!!!!!
 

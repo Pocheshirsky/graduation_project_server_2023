@@ -54,8 +54,8 @@ public class UserController {
         return userService.getUserInfo();
     }
 
-    @GetMapping("/avatar")
-    public ResponseEntity<?> getUserAvatar() { return userService.getUserAvatar(); }
+    @GetMapping("/avatar/{userUuid}")
+    public ResponseEntity<?> getUserAvatar(@PathVariable UUID userUuid) { return userService.getUserAvatar(userUuid); }
 
     @PostMapping("/avatar")
     public ResponseEntity<?> setUserAvatar(@RequestBody MultipartFile file) { return userService.setUserAvatar(file); }

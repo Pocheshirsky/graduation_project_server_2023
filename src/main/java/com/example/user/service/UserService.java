@@ -66,8 +66,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public ResponseEntity<?> getUserAvatar() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ResponseEntity<?> getUserAvatar(UUID userUuid) {
+        User user = getUser(userUuid);
         if (user.getUserInfo() == null)
             throw new RuntimeException("UserInfo is null");
         if (user.getUserInfo().getAvatar().isEmpty())
