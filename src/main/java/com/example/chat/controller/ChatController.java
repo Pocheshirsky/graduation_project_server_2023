@@ -31,7 +31,7 @@ public class ChatController {
         chatMessage.setChatUuid(chatId.get());
         ChatMessage saved = chatMessageService.save(chatMessage);
         messagingTemplate.convertAndSendToUser(saved.getRecipientUuid().toString(),
-                "/queue/messages", chatMessage.getContent());
+                "/queue/messages", chatMessage);
     }
 
     @GetMapping("/chat/{text}")

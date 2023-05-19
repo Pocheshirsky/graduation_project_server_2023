@@ -46,7 +46,7 @@ public class ChatMessageService {
         var chatUuid = chatRoomService.getChatUuid(senderUuid, recipientUuid, false); //TODO: возможно переделать на true!!!!!!!
 
         var messages =
-                chatUuid.map(cId -> chatMessageRepository.findByChatUuid(cId)).orElse(new ArrayList<>());
+                chatUuid.map(cId -> chatMessageRepository.findByChatUuidOrderByTimestampAsc(cId)).orElse(new ArrayList<>());
 
         if (messages.size() > 0) {
             updateStatuses(senderUuid, recipientUuid, MessageStatus.DELIVERED);

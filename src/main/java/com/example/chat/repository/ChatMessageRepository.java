@@ -17,7 +17,7 @@ public interface ChatMessageRepository extends CrudRepository<ChatMessage, UUID>
 
     long countBySenderUuidAndRecipientUuidAndStatus(UUID senderUuid, UUID recipientId, MessageStatus status);
 
-    List<ChatMessage> findByChatUuid(String chatUuid);
+    List<ChatMessage> findByChatUuidOrderByTimestampAsc(String chatUuid);
 
     @Modifying
     @Query("update ChatMessage m set m.status = :status " +

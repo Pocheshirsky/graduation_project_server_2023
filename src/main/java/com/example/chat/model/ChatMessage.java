@@ -21,7 +21,9 @@ public class ChatMessage {
     private String senderName;
     private String recipientName;
     private String content;
+
     @DateTimeFormat()
     private Timestamp timestamp;
+
     private MessageStatus status;
 }
