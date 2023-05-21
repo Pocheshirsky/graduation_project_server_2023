@@ -10,4 +10,7 @@ import java.util.UUID;
 @Repository
 public interface UserPoolRepository extends CrudRepository<UserPool, UUID> {
 
+    boolean existsByUserInfoUuid(UUID userInfoUuid);
+
+    void deleteByUserInfoUuid(UUID userInfoUuid);
 }
