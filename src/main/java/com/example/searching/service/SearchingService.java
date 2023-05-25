@@ -3,10 +3,13 @@ package com.example.searching.service;
 import com.example.searching.model.UserPool;
 import com.example.searching.repository.UserPoolRepository;
 import com.example.user.model.User;
+import com.example.user.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class SearchingService {
@@ -31,6 +34,12 @@ public class SearchingService {
         if (user.getUserInfo() != null) {
             userPoolRepository.deleteByUserInfoUuid(user.getUserInfo().getUuid());
         } else throw new RuntimeException("UserInfo is not created");
+    }
+
+    public List<UserInfo> getNewUserInterlocutor() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var info = user.getUserInfo();
+        return userPoolRepository.findUserInfoByPredicate(info);
     }
 
     public Iterable<UserPool> getUsersList() {
