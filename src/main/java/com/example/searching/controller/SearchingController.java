@@ -17,8 +17,8 @@ public class SearchingController {
     private SearchingService searchingService;
 
     @GetMapping("/he")
-    private List<UserInfo> hne() {
-        return searchingService.getNewUserInterlocutor();
+    private void hne() {
+        searchingService.getNewUserInterlocutor();
     }
 
 
