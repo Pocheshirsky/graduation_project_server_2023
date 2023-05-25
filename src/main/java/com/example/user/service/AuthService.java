@@ -73,7 +73,7 @@ public class AuthService {
         String accessToken = jwtHelper.generateAccessToken(user);
         String refreshTokenString = jwtHelper.generateRefreshToken(user, refreshToken);
 
-        return ResponseEntity.ok(new TokenDTO(modelMapper.map(user,UserDTO.class), accessToken, refreshTokenString));
+        return ResponseEntity.ok(new TokenDTO(modelMapper.map(user, UserDTO.class), accessToken, refreshTokenString));
 
     }
 
@@ -83,7 +83,7 @@ public class AuthService {
         var usr = userService.getUser(user.getUuid());
         if (user.getPassword() != null)
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if(user.getUserInfo()!=null)
+        if (user.getUserInfo() != null)
             usr.setUserInfo(modelMapper.map(user.getUserInfo(), UserInfo.class));
         return ResponseEntity.ok(userRepository.save(usr));
     }
@@ -100,6 +100,8 @@ public class AuthService {
             throw new RuntimeException("User '" + dto.getUsername() + "' alredy exist");
         }
         User user = new User(dto.getUsername(), passwordEncoder.encode(dto.getPassword()));
+        if (dto.getUserInfo() != null)
+            user.setUserInfo(modelMapper.map(dto.getUserInfo(), UserInfo.class));
         Set<Role> set = new HashSet<>();
         for (var role : roles) {
             set.add(new Role() {{
@@ -116,7 +118,7 @@ public class AuthService {
         String accessToken = jwtHelper.generateAccessToken(user);
         String refreshTokenString = jwtHelper.generateRefreshToken(user, refreshToken);
 
-        return ResponseEntity.ok(new TokenDTO(modelMapper.map(user,UserDTO.class), accessToken, refreshTokenString));
+        return ResponseEntity.ok(new TokenDTO(modelMapper.map(user, UserDTO.class), accessToken, refreshTokenString));
 
     }
 
@@ -154,7 +156,7 @@ public class AuthService {
             User user = userService.getUser(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
             String accessToken = jwtHelper.generateAccessToken(user);
 
-            return ResponseEntity.ok(new TokenDTO(modelMapper.map(user,UserDTO.class), accessToken, refreshTokenString));
+            return ResponseEntity.ok(new TokenDTO(modelMapper.map(user, UserDTO.class), accessToken, refreshTokenString));
         }
 
         throw new BadCredentialsException("invalid token");
@@ -177,7 +179,7 @@ public class AuthService {
             String accessToken = jwtHelper.generateAccessToken(user);
             String newRefreshTokenString = jwtHelper.generateRefreshToken(user, refreshToken);
 
-            return ResponseEntity.ok(new TokenDTO(modelMapper.map(user,UserDTO.class), accessToken, newRefreshTokenString));
+            return ResponseEntity.ok(new TokenDTO(modelMapper.map(user, UserDTO.class), accessToken, newRefreshTokenString));
         }
 
         throw new BadCredentialsException("invalid token");
