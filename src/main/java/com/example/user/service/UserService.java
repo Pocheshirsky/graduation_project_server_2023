@@ -34,14 +34,12 @@ public class UserService implements UserDetailsService {
     @Autowired
     private StorageService storageService;
 
-
     @PostConstruct
     public void setupMapper() {
         modelMapper.createTypeMap(User.class, UserDTO.class).addMappings(m -> {
             m.skip(UserDTO::setPassword);
         });
     }
-
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
