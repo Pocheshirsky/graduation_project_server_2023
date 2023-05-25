@@ -26,8 +26,6 @@ public class UserInfo {
     private List<String> interests;
 
     private String locality;
-    private int growth;
-    private int interestedGrowth;
 
     private String familyView;
     private String religion;
@@ -39,6 +37,9 @@ public class UserInfo {
 
     @Convert(converter = StringListConverter.class)
     private List<String> interestedCharacterAccentuations;
+
+    @Convert(converter = StringListConverter.class)
+    private List<String> interestedPersonalityQualities;
 
     private String avatar;
 }

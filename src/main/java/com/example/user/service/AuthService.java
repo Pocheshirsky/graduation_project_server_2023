@@ -102,6 +102,7 @@ public class AuthService {
         User user = new User(dto.getUsername(), passwordEncoder.encode(dto.getPassword()));
         if (dto.getUserInfo() != null)
             user.setUserInfo(modelMapper.map(dto.getUserInfo(), UserInfo.class));
+        else user.setUserInfo(new UserInfo());
         Set<Role> set = new HashSet<>();
         for (var role : roles) {
             set.add(new Role() {{

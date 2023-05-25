@@ -51,11 +51,11 @@ public class SearchingService {
 //            messagingTemplate.convertAndSend("/user/"+user.getUserInfo().getUuid()+"/hne",users);
 
             if (!userPartnerList.isEmpty()) {
-                messagingTemplate.convertAndSend("/user/hne", userPartnerList);
+                messagingTemplate.convertAndSend("/user/"+user.getUserInfo().getUuid()+"/hne", userPartnerList);
                 userWithPartner.add(user);
             }
         }
-        userPoolRepository.deleteAll(userWithPartner);
+//        userPoolRepository.deleteAll(userWithPartner);
     }
 
     public Iterable<UserPool> getUsersList() {

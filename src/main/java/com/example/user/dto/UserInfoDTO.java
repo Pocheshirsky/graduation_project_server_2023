@@ -19,13 +19,12 @@ public class UserInfoDTO {
     private int age;
     private List<String> interests;
     private String locality;
-    private int growth;
-    private int interestedGrowth;
     private String familyView;
     private String religion;
     private String religionImportance;
     private String searchTarget;
     private List<String> characterAccentuations;
     private List<String> interestedCharacterAccentuations;
+    private List<String> interestedPersonalityQualities;
     private String avatar;
 }
