@@ -96,7 +96,15 @@ public class SearchingService {
                 .collect(Collectors.toList());
     }
 
-
+    //Ну хуйня же ну
+    public void createPoolMessage(UserInfo userInfo){
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        PoolMessage poolMessage = new PoolMessage();
+        poolMessage.uuid = new UuidGeneratedValue();
+        poolMessage.userUuid = user.getUuid();
+        poolMessage.foundUserInfo = getUuidByUserInfo();
+        poolMessage.foundUserUuid = userInfo;
+    }
 
     public List<PoolMessage> findUserPoolMessages() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
