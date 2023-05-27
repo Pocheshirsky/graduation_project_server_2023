@@ -1,7 +1,11 @@
 package com.example.searching.service;
 
+import com.example.chat.model.MessageStatus;
+import com.example.searching.model.PoolMessage;
 import com.example.searching.model.UserPool;
+import com.example.searching.repository.PoolMessageRepository;
 import com.example.searching.repository.UserPoolRepository;
+import com.example.user.dto.UserDTO;
 import com.example.user.model.User;
 import com.example.user.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class SearchingService {
 
     @Autowired
     private UserPoolRepository userPoolRepository;
-
+    @Autowired
+    private PoolMessageRepository poolMessageRepository;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
@@ -56,6 +64,16 @@ public class SearchingService {
             }
         }
 //        userPoolRepository.deleteAll(userWithPartner);
+    }
+
+    public List<PoolMessage> findUserPoolMessages() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return poolMessageRepository.findPoolMessageByUserUuidAndStatusOrderByTimestampAsc(user.getUuid(), MessageStatus.DELIVERED);
+    }
+
+    @Transactional
+    public void updateStatuses(UUID messageUuid) {
+        poolMessageRepository.updatePoolMessageStatus(messageUuid, MessageStatus.RECEIVED);
     }
 
     public Iterable<UserPool> getUsersList() {

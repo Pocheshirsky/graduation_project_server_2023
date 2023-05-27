@@ -20,7 +20,6 @@ public class ChatMessageService {
     @Autowired
     private ChatRoomService chatRoomService;
 
-
     public ChatMessage save(ChatMessage chatMessage) {
         chatMessage.setStatus(MessageStatus.RECEIVED);
         chatMessageRepository.save(chatMessage);
