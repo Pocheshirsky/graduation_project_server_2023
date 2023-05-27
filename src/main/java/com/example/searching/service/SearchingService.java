@@ -100,11 +100,12 @@ public class SearchingService {
     public void createPoolMessage(UserInfo userInfo){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PoolMessage poolMessage = new PoolMessage();
-        poolMessage.uuid = new UuidGeneratedValue();
-        poolMessage.userUuid = user.getUuid();
-        poolMessage.foundUserInfo = getUuidByUserInfo();
-        poolMessage.foundUserUuid = userInfo;
+        poolMessage.setUserUuid(user.getUuid());
+        poolMessage.setFoundUserUuid();
+        poolMessage.setFoundUserInfo(userInfo);
     }
+
+    //
 
     public List<PoolMessage> findUserPoolMessages() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
