@@ -27,7 +27,7 @@ public class PoolMessage {
     @OneToOne()
     private UserInfo foundUserInfo;
 
-    private MessageStatus messageStatus;
+    private MessageStatus status;
 
     @DateTimeFormat()
     private Timestamp timestamp;

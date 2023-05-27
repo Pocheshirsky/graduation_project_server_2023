@@ -1,5 +1,6 @@
 package com.example.searching.service;
 
+import com.example.chat.model.ChatMessage;
 import com.example.chat.model.MessageStatus;
 import com.example.searching.model.PoolMessage;
 import com.example.searching.model.UserPool;
@@ -8,6 +9,7 @@ import com.example.searching.repository.UserPoolRepository;
 import com.example.user.dto.UserDTO;
 import com.example.user.model.User;
 import com.example.user.model.UserInfo;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +31,8 @@ public class SearchingService {
     private PoolMessageRepository poolMessageRepository;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private ModelMapper modelMapper;
 
     public void addUserInPool() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -60,11 +64,25 @@ public class SearchingService {
 
             if (!userPartnerList.isEmpty()) {
                 messagingTemplate.convertAndSend("/user/"+user.getUserInfo().getUuid()+"/hne", userPartnerList);
+
                 userWithPartner.add(user);
             }
         }
 //        userPoolRepository.deleteAll(userWithPartner);
     }
+
+    public PoolMessage save(PoolMessage poolMessage) {
+        poolMessage.setStatus(MessageStatus.RECEIVED);
+        poolMessageRepository.save(poolMessage);
+        return poolMessage;
+    }
+
+//    public List<PoolMessage> savePoolMessages(List<UserInfo> userPartnerList) {
+//        var PoolMessages = UserPoolRepository.findAllByUserInfoList(userPartnerList).stream()
+//                .map(userPool -> userPool.getUuid()).collect(Collectors.toSet());
+//        return StreamSupport.stream(userPoolRepository.findAllByUserInfoList(userPartnerList).spliterator(),false)
+//                .map(user -> modelMapper.map(user,UserDTO.class)).collect(Collectors.toList());
+//    }
 
     public List<PoolMessage> findUserPoolMessages() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

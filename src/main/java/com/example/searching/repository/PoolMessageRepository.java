@@ -17,7 +17,7 @@ public interface PoolMessageRepository extends CrudRepository<PoolMessage, UUID>
     List<PoolMessage> findPoolMessageByUserUuidAndStatusOrderByTimestampAsc(UUID userUuid, MessageStatus status);
 
     @Modifying
-    @Query("update PoolMessage m set m.messageStatus = :status " +
+    @Query("update PoolMessage m set m.status = :status " +
             "where m.uuid = :uuid ")
     void updatePoolMessageStatus(
             @Param(value = "uuid") UUID uuid,
