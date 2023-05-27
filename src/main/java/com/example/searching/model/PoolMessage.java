@@ -23,6 +23,7 @@ public class PoolMessage {
     private UUID uuid;
 
     private UUID userUuid;
+    private UUID foundUserUuid;
 
     @OneToOne()
     private UserInfo foundUserInfo;

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -71,18 +72,31 @@ public class SearchingService {
 //        userPoolRepository.deleteAll(userWithPartner);
     }
 
-    public PoolMessage save(PoolMessage poolMessage) {
-        poolMessage.setStatus(MessageStatus.RECEIVED);
-        poolMessageRepository.save(poolMessage);
-        return poolMessage;
+    public List<PoolMessage> savePoolMessages(List<UserInfo> userPartnerList) {
+        var PoolMessages = UserPoolRepository.findAllByUserInfoList(userPartnerList).stream()
+                .map(userPool -> userPool.getUuid()).collect(Collectors.toSet());
+        return StreamSupport.stream(userPoolRepository.findAllByUserInfoList(userPartnerList).spliterator(),false)
+                .map(user -> modelMapper.map(user,UserDTO.class)).collect(Collectors.toList());
     }
 
-//    public List<PoolMessage> savePoolMessages(List<UserInfo> userPartnerList) {
-//        var PoolMessages = UserPoolRepository.findAllByUserInfoList(userPartnerList).stream()
-//                .map(userPool -> userPool.getUuid()).collect(Collectors.toSet());
-//        return StreamSupport.stream(userPoolRepository.findAllByUserInfoList(userPartnerList).spliterator(),false)
-//                .map(user -> modelMapper.map(user,UserDTO.class)).collect(Collectors.toList());
-//    }
+    public List<PoolMessage> savePoolMessages(List<PoolMessage> poolMessages) {
+        return poolMessages.stream()
+                .map(this::savePoolMessage)
+                .collect(Collectors.toList());
+    }
+
+    //Зная UserPool сохранить текущего User, найденного User и UserInfo найденного User?????????????????????????????
+    public void savePoolMessages(List<UserInfo> userInfoList) {
+        Stream<UserInfo> stream = userInfoList.stream();
+    }
+
+    public void savePoolMessages(List<UserInfo> userInfoList) {
+        List<Object[]> poolMessage = userInfoList.stream()
+                .map(userInfo -> new Object[] )//?????????????????????
+                .collect(Collectors.toList());
+    }
+
+
 
     public List<PoolMessage> findUserPoolMessages() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

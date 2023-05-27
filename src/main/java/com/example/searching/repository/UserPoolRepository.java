@@ -16,5 +16,4 @@ public interface UserPoolRepository extends CrudRepository<UserPool, UUID>, User
 
     void deleteByUserInfoUuid(UUID userInfoUuid);
 
-    void findAllByUserInfoList(List<UserInfo> userInfoList);
 }
