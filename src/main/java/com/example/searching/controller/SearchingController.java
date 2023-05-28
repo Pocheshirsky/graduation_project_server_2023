@@ -2,6 +2,7 @@ package com.example.searching.controller;
 
 import com.example.searching.model.PoolMessage;
 import com.example.searching.service.SearchingService;
+import com.example.user.model.User;
 import com.example.user.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,8 @@ public class SearchingController {
     @GetMapping("/message-pool")
     private List<PoolMessage> findUserPoolMessages() { return searchingService.findUserPoolMessages(); }
 
-    @PutMapping("/message-pool/{messageUuid}")
-    private void updateUserPoolMessageStatus(@PathVariable UUID messageUuid) { searchingService.updateStatuses(messageUuid); }
+    @PutMapping("/message-pool/{messageUuid}/{userInfoUuid}")
+    private User updateUserPoolMessageStatus(@PathVariable UUID messageUuid, @PathVariable UUID userInfoUuid) {
+        return searchingService.updateStatuses(messageUuid, userInfoUuid);
+    }
 }

@@ -9,6 +9,7 @@ import com.example.searching.repository.UserPoolRepository;
 import com.example.user.dto.UserDTO;
 import com.example.user.model.User;
 import com.example.user.model.UserInfo;
+import com.example.user.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -34,6 +35,8 @@ public class SearchingService {
     private PoolMessageRepository poolMessageRepository;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -88,8 +91,9 @@ public class SearchingService {
     }
 
     @Transactional
-    public void updateStatuses(UUID messageUuid) {
+    public User updateStatuses(UUID messageUuid, UUID userInfoUuid) {
         poolMessageRepository.updatePoolMessageStatus(messageUuid, MessageStatus.RECEIVED);
+        return userRepository.findByUserInfoUuid(userInfoUuid).orElseThrow(() -> new RuntimeException());
     }
 
     public Iterable<UserPool> getUsersList() {
