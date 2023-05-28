@@ -16,7 +16,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -61,60 +63,24 @@ public class SearchingService {
         List<UserPool> userWithPartner = new ArrayList<>();
         for (var user : userPools) {
             var userPartnerList = userPoolRepository.findUserInfoByPredicate(user.getUserInfo());
-//            messagingTemplate.convertAndSend("/user/"+user.getUserInfo().getUuid()+"/hne",users);
+            var poolMessagesList = userPartnerList.stream().map(userInfo -> {
+                var pMessage = new PoolMessage();
+                pMessage.setUserUuid(user.getUuid());
+                pMessage.setFoundUserInfo(userInfo);
+                pMessage.setStatus(MessageStatus.DELIVERED);
+                pMessage.setTimestamp(new Timestamp(new Date().getTime()));
+                return pMessage;
+            }).toList();
 
-            if (!userPartnerList.isEmpty()) {
-                messagingTemplate.convertAndSend("/user/"+user.getUserInfo().getUuid()+"/hne", userPartnerList);
+            if (!poolMessagesList.isEmpty()) {
+                poolMessageRepository.saveAll(poolMessagesList);
+                messagingTemplate.convertAndSend("/user/" + user.getUserInfo().getUuid() + "/hne", poolMessagesList);
 
                 userWithPartner.add(user);
             }
         }
 //        userPoolRepository.deleteAll(userWithPartner);
     }
-
-    //Вроде так??????
-    public List<PoolMessage> savePoolMessages(List<PoolMessage> poolMessages) {
-        poolMessages.stream()
-             .map(el -> { el.setStatus(MessageStatus.RECEIVED);
-                  return poolMessageRepository.save(el); }
-             .collect(Collectors.toList()));
-        return poolMessages;
-    }
-
-    public List<PoolMessage> savePoolMessages(List<UserInfo> userPartnerList) {
-        var PoolMessages = UserPoolRepository.findAllByUserInfoList(userPartnerList).stream()
-                .map(userPool -> userPool.getUuid()).collect(Collectors.toSet());
-        return StreamSupport.stream(userPoolRepository.findAllByUserInfoList(userPartnerList).spliterator(),false)
-                .map(user -> modelMapper.map(user,UserDTO.class)).collect(Collectors.toList());
-    }
-
-    public List<PoolMessage> savePoolMessages(List<PoolMessage> poolMessages) {
-        return poolMessages.stream()
-                .map(this::savePoolMessage)
-                .collect(Collectors.toList());
-    }
-
-    //Зная UserPool сохранить текущего User, найденного User и UserInfo найденного User?????????????????????????????
-    public void savePoolMessages(List<UserInfo> userInfoList) {
-        Stream<UserInfo> stream = userInfoList.stream();
-    }
-
-    public void savePoolMessages(List<UserInfo> userInfoList) {
-        List<Object[]> poolMessage = userInfoList.stream()
-                .map(userInfo -> new Object[] )//?????????????????????
-                .collect(Collectors.toList());
-    }
-
-    //Ну хуйня же ну
-    public void createPoolMessage(UserInfo userInfo){
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        PoolMessage poolMessage = new PoolMessage();
-        poolMessage.setUserUuid(user.getUuid());
-        poolMessage.setFoundUserUuid();
-        poolMessage.setFoundUserInfo(userInfo);
-    }
-
-    //
 
     public List<PoolMessage> findUserPoolMessages() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
