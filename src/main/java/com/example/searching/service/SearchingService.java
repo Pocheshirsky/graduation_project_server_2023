@@ -72,6 +72,15 @@ public class SearchingService {
 //        userPoolRepository.deleteAll(userWithPartner);
     }
 
+    //Вроде так??????
+    public List<PoolMessage> savePoolMessages(List<PoolMessage> poolMessages) {
+        poolMessages.stream()
+             .map(el -> { el.setStatus(MessageStatus.RECEIVED);
+                  return poolMessageRepository.save(el); }
+             .collect(Collectors.toList()));
+        return poolMessages;
+    }
+
     public List<PoolMessage> savePoolMessages(List<UserInfo> userPartnerList) {
         var PoolMessages = UserPoolRepository.findAllByUserInfoList(userPartnerList).stream()
                 .map(userPool -> userPool.getUuid()).collect(Collectors.toSet());
