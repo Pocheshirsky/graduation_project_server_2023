@@ -13,6 +13,7 @@ import com.example.user.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,16 +60,18 @@ public class SearchingService {
         } else throw new RuntimeException("UserInfo is not created");
     }
 
+    //@Scheduled(fixedDelay = 30_000)
     public void getNewUserInterlocutor() {
 //        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        var info = user.getUserInfo();
+        System.err.println("Поиск вызван");
         Iterable<UserPool> userPools = getUsersList();
         List<UserPool> userWithPartner = new ArrayList<>();
         for (var user : userPools) {
             var userPartnerList = userPoolRepository.findUserInfoByPredicate(user.getUserInfo());
             var poolMessagesList = userPartnerList.stream().map(userInfo -> {
                 var pMessage = new PoolMessage();
-                pMessage.setUserUuid(user.getUuid());
+                pMessage.setUserUuid(user.getUserInfo().getUuid());
                 pMessage.setFoundUserInfo(userInfo);
                 pMessage.setStatus(MessageStatus.DELIVERED);
                 pMessage.setTimestamp(new Timestamp(new Date().getTime()));
@@ -82,12 +85,12 @@ public class SearchingService {
                 userWithPartner.add(user);
             }
         }
-//        userPoolRepository.deleteAll(userWithPartner);
+        //userPoolRepository.deleteAll(userWithPartner);
     }
 
     public List<PoolMessage> findUserPoolMessages() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return poolMessageRepository.findPoolMessageByUserUuidAndStatusOrderByTimestampAsc(user.getUuid(), MessageStatus.DELIVERED);
+        return poolMessageRepository.findPoolMessageByUserUuidAndStatusOrderByTimestampAsc(user.getUserInfo().getUuid(), MessageStatus.DELIVERED);
     }
 
     @Transactional

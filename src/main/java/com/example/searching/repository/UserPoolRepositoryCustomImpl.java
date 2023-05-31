@@ -34,8 +34,8 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
         if (info.getUuid() != null)
             pc.add(cb.notEqual(root.get(UserInfo_.UUID), info.getUuid()));
 
-        var alreadyFoundUsers = poolMessageRepository.findPoolMessageByUserUuid(info.getUuid());
-        alreadyFoundUsers.forEach(poolMessage -> pc.add(cb.notEqual(root.get(UserInfo_.UUID), poolMessage.getFoundUserInfo().getUuid())));
+//        var alreadyFoundUsers = poolMessageRepository.findPoolMessageByUserUuid(info.getUuid());
+//        alreadyFoundUsers.forEach(poolMessage -> pc.add(cb.notEqual(root.get(UserInfo_.UUID), poolMessage.getFoundUserInfo().getUuid())));
 
 
         if (info.getSearchTarget() == null)
