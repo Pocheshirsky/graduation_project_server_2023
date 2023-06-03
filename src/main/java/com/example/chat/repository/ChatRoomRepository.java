@@ -13,4 +13,6 @@ public interface ChatRoomRepository extends CrudRepository<ChatRoom, UUID> {
     Optional<ChatRoom> findBySenderUuidAndRecipientUuid(UUID senderUuid, UUID recipientUuid);
 
     List<ChatRoom> findAllBySenderUuid(UUID senderUuid);
+
+    void deleteChatRoomBySenderUuidAndRecipientUuid(UUID senderUuid, UUID recipientUuid);
 }

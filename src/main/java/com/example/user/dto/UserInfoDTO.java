@@ -23,6 +23,9 @@ public class UserInfoDTO {
     private String religion;
     private String religionImportance;
     private String searchTarget;
+    private String aboutMe;
+    private String attitudeToSmoking;
+    private String attitudeToAlcohol;
     private List<String> characterAccentuations;
     private List<String> interestedCharacterAccentuations;
     private List<String> interestedPersonalityQualities;

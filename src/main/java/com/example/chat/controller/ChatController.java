@@ -58,4 +58,9 @@ public class ChatController {
     public ResponseEntity<?> findUserChats(@PathVariable UUID senderUuid) {
         return ResponseEntity.ok(chatMessageService.findUserChats(senderUuid));
     }
+
+    @DeleteMapping("/messages/chat/{userUuid}/{recipientUuid}")
+    public void deleteChat (@PathVariable UUID userUuid, @PathVariable UUID recipientUuid) {
+        chatRoomService.deleteUserChatRoom(userUuid, recipientUuid);
+    }
 }

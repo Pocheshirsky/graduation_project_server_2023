@@ -31,6 +31,9 @@ public class UserInfo {
     private String religion;
     private String religionImportance;
     private String searchTarget;
+    private String aboutMe;
+    private String attitudeToSmoking;
+    private String attitudeToAlcohol;
 
     @Convert(converter = StringListConverter.class)
     private List<String> characterAccentuations;
