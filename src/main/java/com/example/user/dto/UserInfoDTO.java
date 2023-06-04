@@ -26,6 +26,7 @@ public class UserInfoDTO {
     private String aboutMe;
     private String attitudeToSmoking;
     private String attitudeToAlcohol;
+    private String antipathy;
     private List<String> characterAccentuations;
     private List<String> interestedCharacterAccentuations;
     private List<String> interestedPersonalityQualities;

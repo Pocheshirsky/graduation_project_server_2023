@@ -34,6 +34,7 @@ public class UserInfo {
     private String aboutMe;
     private String attitudeToSmoking;
     private String attitudeToAlcohol;
+    private String antipathy;
 
     @Convert(converter = StringListConverter.class)
     private List<String> characterAccentuations;

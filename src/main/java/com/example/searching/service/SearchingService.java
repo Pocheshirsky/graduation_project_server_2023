@@ -47,6 +47,7 @@ public class SearchingService {
             if (userPoolRepository.existsByUserInfoUuid(user.getUserInfo().getUuid()))
                 throw new RuntimeException("User already in pool");
             UserPool userInPool = new UserPool();
+            userInPool.setUserUuid(user.getUuid());
             userInPool.setUserInfo(user.getUserInfo());
             userPoolRepository.save(userInPool);
         } else throw new RuntimeException("UserInfo is not created");
@@ -60,19 +61,17 @@ public class SearchingService {
         } else throw new RuntimeException("UserInfo is not created");
     }
 
-    //@Scheduled(fixedDelay = 30_000)
+    @Scheduled(fixedDelay = 10_000)
     public void getNewUserInterlocutor() {
-//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        var info = user.getUserInfo();
-        System.err.println("Поиск вызван");
+        System.err.println("Searching created");
         Iterable<UserPool> userPools = getUsersList();
         List<UserPool> userWithPartner = new ArrayList<>();
-        for (var user : userPools) {
-            var userPartnerList = userPoolRepository.findUserInfoByPredicate(user.getUserInfo());
-            var poolMessagesList = userPartnerList.stream().map(userInfo -> {
+        for (var userPl : userPools) {
+            var userPartnerList = userPoolRepository.findUserInfoByPredicate(userPl.getUserInfo());
+            var poolMessagesList = userPartnerList.stream().map(userPool -> {
                 var pMessage = new PoolMessage();
-                pMessage.setUserUuid(user.getUserInfo().getUuid());
-                pMessage.setFoundUserInfo(userInfo);
+                pMessage.setUserUuid(userPool.getUserUuid());
+                pMessage.setFoundUserInfo(userPool.getUserInfo());
                 pMessage.setStatus(MessageStatus.DELIVERED);
                 pMessage.setTimestamp(new Timestamp(new Date().getTime()));
                 return pMessage;
@@ -80,9 +79,9 @@ public class SearchingService {
 
             if (!poolMessagesList.isEmpty()) {
                 poolMessageRepository.saveAll(poolMessagesList);
-                messagingTemplate.convertAndSend("/user/" + user.getUserInfo().getUuid() + "/hne", poolMessagesList);
+                messagingTemplate.convertAndSend("/user/" + userPl.getUserInfo().getUuid() + "/hne", poolMessagesList);
 
-                userWithPartner.add(user);
+                userWithPartner.add(userPl);
             }
         }
         //userPoolRepository.deleteAll(userWithPartner);

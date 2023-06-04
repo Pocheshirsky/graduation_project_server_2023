@@ -1,5 +1,6 @@
 package com.example.searching.repository;
 
+import com.example.searching.model.UserPool;
 import com.example.user.model.UserInfo;
 import com.example.user.model.UserInfo_;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +22,12 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
     private PoolMessageRepository poolMessageRepository;
 
     @Override
-    public List<UserInfo> findUserInfoByPredicate(UserInfo info) {
+    public List<UserPool> findUserInfoByPredicate(UserInfo info) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<UserInfo> cq = cb.createQuery(UserInfo.class);
-        Root<UserInfo> root = cq.from(UserInfo.class);
+        CriteriaQuery<UserPool> cq = cb.createQuery(UserPool.class);
+        Root<UserPool> rt = cq.from(UserPool.class);
+        Join<UserPool, UserInfo> root = rt.join("userInfo", JoinType.LEFT);
         List<Predicate> pc = new ArrayList<>();
 
         if (info.getUuid() != null)
@@ -126,25 +125,45 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
 
         var result = em.createQuery(cq).getResultList();
 
-        List<UserInfo> acceptableUsers = new ArrayList<>();
-        var currentUserAccentuations = info.getCharacterAccentuations();
-        var currentUserInterestedAccentuations = info.getInterestedCharacterAccentuations();
+        List<UserPool> acceptableUsers = new ArrayList<>();
 
-        if (info.getSearchTarget().equals("relationships")) {
-            nap:
-            for (var user : result) {
-                for (int i = 0; i < user.getCharacterAccentuations().size(); i++) {
-                    if (Integer.parseInt(currentUserAccentuations.get(i)) < Integer.parseInt(user.getInterestedCharacterAccentuations().get(i)) &&
-                            Integer.parseInt(currentUserInterestedAccentuations.get(i)) > Integer.parseInt(user.getCharacterAccentuations().get(i)))
-                        continue nap;
+
+        if(info.getSearchTarget() != null) {
+            if (info.getSearchTarget().equals("relationships")) {
+                var currentUserAccentuations = info.getCharacterAccentuations();
+                var currentUserInterestedAccentuations = info.getInterestedCharacterAccentuations();
+                nap:
+                for (var user : result) {
+                    for (int i = 0; i < user.getUserInfo().getCharacterAccentuations().size(); i++) {
+                        if (Integer.parseInt(currentUserAccentuations.get(i)) < Integer.parseInt(user.getUserInfo().getInterestedCharacterAccentuations().get(i)) &&
+                                Integer.parseInt(currentUserInterestedAccentuations.get(i)) > Integer.parseInt(user.getUserInfo().getCharacterAccentuations().get(i)))
+                            continue nap;
+                    }
+                    acceptableUsers.add(user);
                 }
-                acceptableUsers.add(user);
+                return acceptableUsers;
             }
+            else if(info.getSearchTarget().equals("entertainment")) {
+                var interests = info.getInterests();
+                nam:
+                for (var user : result) {
+                    for (int i = 0; i < interests.size(); i++) {
+                        for (int j = 0; j < user.getUserInfo().getInterests().size(); j++) {
+                            if (interests.get(i).equals(user.getUserInfo().getInterests().get(j))) {
+                                acceptableUsers.add(user);
+                                continue nam;
+                            }
+                        }
+                    }
+                }
+            }
+            return acceptableUsers;
         }
-        return acceptableUsers;
+        else
+            return result;
     }
 
-    private void agePredicate(UserInfo info, List<Predicate> pc, CriteriaBuilder cb, Root<UserInfo> root) {
+    private void agePredicate(UserInfo info, List<Predicate> pc, CriteriaBuilder cb, Join<UserPool, UserInfo> root) {
         var age = info.getAge();
         var ageMin = age;
         var ageMax = age;
