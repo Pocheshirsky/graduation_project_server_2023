@@ -17,6 +17,8 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
 
     @PersistenceContext
     private EntityManager em;
+//        var alreadyFoundUsers = poolMessageRepository.findPoolMessageByUserUuid(info.getUuid());
+//        alreadyFoundUsers.forEach(poolMessage -> pc.add(cb.notEqual(root.get(UserInfo_.UUID), poolMessage.getFoundUserInfo().getUuid())));
 
     @Autowired
     private PoolMessageRepository poolMessageRepository;
@@ -32,10 +34,6 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
 
         if (info.getUuid() != null)
             pc.add(cb.notEqual(root.get(UserInfo_.UUID), info.getUuid()));
-
-//        var alreadyFoundUsers = poolMessageRepository.findPoolMessageByUserUuid(info.getUuid());
-//        alreadyFoundUsers.forEach(poolMessage -> pc.add(cb.notEqual(root.get(UserInfo_.UUID), poolMessage.getFoundUserInfo().getUuid())));
-
 
         if (info.getSearchTarget() == null)
             pc.add(cb.isNull(root.get(UserInfo_.SEARCH_TARGET)));
@@ -68,8 +66,6 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
                     } else pc.add(cb.equal(root.get(UserInfo_.RELIGION_IMPORTANCE), "not_important"));
                 } else pc.add(cb.isNull(root.get(UserInfo_.RELIGION_IMPORTANCE)));
 
-                //Вариантов может прийти много, надо выделять 5 наиболее подходящих
-
                 if (info.getCharacterAccentuations() == null && info.getInterestedCharacterAccentuations() == null) {
                     pc.add(cb.isNull(root.get(UserInfo_.CHARACTER_ACCENTUATIONS)));
                 } else if (info.getInterestedCharacterAccentuations() == null)
@@ -93,30 +89,6 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
                         else pc.add(cb.isNull(root.get(UserInfo_.RELIGION)));
                     } else pc.add(cb.equal(root.get(UserInfo_.RELIGION_IMPORTANCE), "not_important"));
                 } else pc.add(cb.isNull(root.get(UserInfo_.RELIGION_IMPORTANCE)));
-
-                //Совпадение всех возможных интересов маловероятно, нужно находить того, у кого совпадение наибольшее
-                //т.е. сравнивать кандидатов между собой и находить 5 наиболее подходящих (крч думать надо)
-                if (info.getInterests() != null)
-                    for (int i = 0; i < info.getInterests().size(); i++) {
-
-                    }
-                else pc.add(cb.isNull(root.get(UserInfo_.INTERESTS)));
-
-            } else if (info.getSearchTarget().equals("communication")) {
-
-                if (info.getInterests() != null)
-                    for (int i = 0; i < info.getInterests().size(); i++) {
-
-                    }
-                else pc.add(cb.isNull(root.get(UserInfo_.INTERESTS)));
-
-            } else if (info.getSearchTarget().equals("entertainment")) {
-
-                if (info.getInterests() != null)
-                    for (int i = 0; i < info.getInterests().size(); i++) {
-
-                    }
-                else pc.add(cb.isNull(root.get(UserInfo_.INTERESTS)));
             }
         }
 
@@ -135,15 +107,19 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
                 nap:
                 for (var user : result) {
                     for (int i = 0; i < user.getUserInfo().getCharacterAccentuations().size(); i++) {
-                        if (Integer.parseInt(currentUserAccentuations.get(i)) < Integer.parseInt(user.getUserInfo().getInterestedCharacterAccentuations().get(i)) &&
-                                Integer.parseInt(currentUserInterestedAccentuations.get(i)) > Integer.parseInt(user.getUserInfo().getCharacterAccentuations().get(i)))
+                        if (Integer.parseInt(currentUserAccentuations.get(i)) <
+                                Integer.parseInt(user.getUserInfo().getInterestedCharacterAccentuations().get(i)) &&
+                                Integer.parseInt(currentUserInterestedAccentuations.get(i)) >
+                                        Integer.parseInt(user.getUserInfo().getCharacterAccentuations().get(i)))
                             continue nap;
                     }
                     acceptableUsers.add(user);
                 }
                 return acceptableUsers;
             }
-            else if(info.getSearchTarget().equals("entertainment")) {
+            else if(info.getSearchTarget().equals("entertainment") ||
+                    info.getSearchTarget().equals("friendship") ||
+                    info.getSearchTarget().equals("communication")) {
                 var interests = info.getInterests();
                 nam:
                 for (var user : result) {

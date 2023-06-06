@@ -74,7 +74,6 @@ public class AuthService {
         String refreshTokenString = jwtHelper.generateRefreshToken(user, refreshToken);
 
         return ResponseEntity.ok(new TokenDTO(modelMapper.map(user, UserDTO.class), accessToken, refreshTokenString));
-
     }
 
     public ResponseEntity<?> changeUserInfo(UserDTO user) {
@@ -120,7 +119,6 @@ public class AuthService {
         String refreshTokenString = jwtHelper.generateRefreshToken(user, refreshToken);
 
         return ResponseEntity.ok(new TokenDTO(modelMapper.map(user, UserDTO.class), accessToken, refreshTokenString));
-
     }
 
     @Transactional

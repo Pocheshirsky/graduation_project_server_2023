@@ -35,22 +35,14 @@ public class ChatMessageService {
         return chatRoomService.findUserChats(senderUuid);
     }
 
-//    @Scheduled(fixedDelay = 100_000)
-//    public void getHne(){
-//        System.err.println("hne");
-//    }
-
     @Transactional
     public List<ChatMessage> findChatMessages(UUID senderUuid, UUID recipientUuid) {
-        var chatUuid = chatRoomService.getChatUuid(senderUuid, recipientUuid, false); //TODO: возможно переделать на true!!!!!!!
-
+        var chatUuid = chatRoomService.getChatUuid(senderUuid, recipientUuid, false);
         var messages =
                 chatUuid.map(cId -> chatMessageRepository.findByChatUuidOrderByTimestampAsc(cId)).orElse(new ArrayList<>());
-
         if (messages.size() > 0) {
             updateStatuses(senderUuid, recipientUuid, MessageStatus.DELIVERED);
         }
-
         return messages;
     }
 

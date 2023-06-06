@@ -27,7 +27,8 @@ public class AccessTokenFilter extends OncePerRequestFilter {
     private UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         try {
             Optional<String> accessToken = parseAccessToken(request);
             if(accessToken.isPresent() && jwtHelper.validateAccessToken(accessToken.get())) {
@@ -40,7 +41,6 @@ public class AccessTokenFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             log.error("cannot set authentication", e);
         }
-
         filterChain.doFilter(request, response);
     }
 

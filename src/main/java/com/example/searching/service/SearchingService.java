@@ -61,7 +61,7 @@ public class SearchingService {
         } else throw new RuntimeException("UserInfo is not created");
     }
 
-    @Scheduled(fixedDelay = 10_000)
+    //@Scheduled(fixedDelay = 60_000)
     public void getNewUserInterlocutor() {
         System.err.println("Searching created");
         Iterable<UserPool> userPools = getUsersList();
@@ -84,7 +84,7 @@ public class SearchingService {
                 userWithPartner.add(userPl);
             }
         }
-        //userPoolRepository.deleteAll(userWithPartner);
+        userPoolRepository.deleteAll(userWithPartner);
     }
 
     public List<PoolMessage> findUserPoolMessages() {
