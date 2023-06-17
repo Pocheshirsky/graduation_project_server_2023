@@ -1,0 +1,68 @@
+version: '3.8'
+services:
+  front:
+    image: front:0.0.1
+    build:
+      context: ../graduation_project_client_2023
+      dockerfile: dockerfile
+    ports:
+      - "8081:8080"
+  server:
+    image: server:0.0.1
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database/zaz
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      FILEPATH:  /var/uploads
+  database:
+    image: postgres:15.3-alpine
+    environment:
+      POSTGRES_DB: zaz
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#services:
+#  app:
+#    image: 'docker-spring-boot-postgres:latest'
+#    build:
+#      context: .
+#    container_name: app
+#    depends_on:
+#      - db
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
+#  db:
+#    image: postgres:15.3-alpine
+#    environment:
+#      - POSTGRES_DB=zaaz
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=root
+#
+#    ports:
+#      - 5432
