@@ -61,7 +61,7 @@ public class SearchingService {
         } else throw new RuntimeException("UserInfo is not created");
     }
 
-    //@Scheduled(fixedDelay = 60_000)
+    @Scheduled(fixedDelay = 30_000)
     public void getNewUserInterlocutor() {
         System.err.println("Searching created");
         Iterable<UserPool> userPools = getUsersList();
@@ -89,7 +89,7 @@ public class SearchingService {
 
     public List<PoolMessage> findUserPoolMessages() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return poolMessageRepository.findPoolMessageByUserUuidAndStatusOrderByTimestampAsc(user.getUserInfo().getUuid(), MessageStatus.DELIVERED);
+        return poolMessageRepository.findPoolMessageByUserUuidAndStatusOrderByTimestampAsc(user.getUuid(), MessageStatus.DELIVERED);
     }
 
     @Transactional

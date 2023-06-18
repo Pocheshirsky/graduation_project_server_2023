@@ -82,7 +82,7 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
                 else pc.add(cb.equal(root.get(UserInfo_.AGE), 0));
 
                 if (info.getReligionImportance() != null) {
-                    if (info.getReligionImportance().equals("religionImportance")) {
+                    if (info.getReligionImportance().equals("important")) {
                         pc.add(cb.equal(root.get(UserInfo_.RELIGION_IMPORTANCE), "important"));
                         if (info.getReligion() != null)
                             pc.add(cb.equal(root.get(UserInfo_.RELIGION), info.getReligion()));
@@ -99,7 +99,6 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
 
         List<UserPool> acceptableUsers = new ArrayList<>();
 
-
         if(info.getSearchTarget() != null) {
             if (info.getSearchTarget().equals("relationships")) {
                 var currentUserAccentuations = info.getCharacterAccentuations();
@@ -107,33 +106,34 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
                 nap:
                 for (var user : result) {
                     for (int i = 0; i < user.getUserInfo().getCharacterAccentuations().size(); i++) {
-                        if (Integer.parseInt(currentUserAccentuations.get(i)) <
-                                Integer.parseInt(user.getUserInfo().getInterestedCharacterAccentuations().get(i)) &&
-                                Integer.parseInt(currentUserInterestedAccentuations.get(i)) >
-                                        Integer.parseInt(user.getUserInfo().getCharacterAccentuations().get(i)))
-                            continue nap;
+                        if(currentUserInterestedAccentuations.get(i) != null && user.getUserInfo().getInterestedCharacterAccentuations().get(i) != null)
+                            if (Integer.parseInt(currentUserAccentuations.get(i)) <
+                                    Integer.parseInt(user.getUserInfo().getInterestedCharacterAccentuations().get(i)) ||
+                                    Integer.parseInt(currentUserInterestedAccentuations.get(i)) >
+                                            Integer.parseInt(user.getUserInfo().getCharacterAccentuations().get(i)))
+                                continue nap;
                     }
                     acceptableUsers.add(user);
                 }
                 return acceptableUsers;
             }
-            else if(info.getSearchTarget().equals("entertainment") ||
-                    info.getSearchTarget().equals("friendship") ||
-                    info.getSearchTarget().equals("communication")) {
+            else {
                 var interests = info.getInterests();
-                nam:
                 for (var user : result) {
+                    int interestsCounter = 0;
                     for (int i = 0; i < interests.size(); i++) {
                         for (int j = 0; j < user.getUserInfo().getInterests().size(); j++) {
                             if (interests.get(i).equals(user.getUserInfo().getInterests().get(j))) {
-                                acceptableUsers.add(user);
-                                continue nam;
+                                interestsCounter += 1;
                             }
                         }
                     }
+                    if(interestsCounter >= 3){
+                        acceptableUsers.add(user);
+                    }
                 }
+                return acceptableUsers;
             }
-            return acceptableUsers;
         }
         else
             return result;

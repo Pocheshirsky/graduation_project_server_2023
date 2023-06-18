@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -52,8 +53,8 @@ public class UserService implements UserDetailsService {
         return ResponseEntity.ok(modelMapper.map(user, UserDTO.class));
     }
 
-    public User getUser(UUID userUUID) {
-        return userRepository.findById(userUUID).orElseThrow(() -> new RuntimeException("User " + userUUID + " not found"));
+    public User getUserByUuid(UUID userUUID) {
+        return userRepository.findByUuid(userUUID).orElseThrow(() -> new RuntimeException("User " + userUUID + " not found"));
     }
 
     public void deleteUser(UUID userUUID) {
@@ -65,7 +66,7 @@ public class UserService implements UserDetailsService {
     }
 
     public ResponseEntity<?> getUserAvatar(UUID userUuid) {
-        User user = getUser(userUuid);
+        User user = getUserByUuid(userUuid);
         if (user.getUserInfo() == null)
             throw new RuntimeException("UserInfo is null");
         if (user.getUserInfo().getAvatar().isEmpty())

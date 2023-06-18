@@ -79,7 +79,7 @@ public class AuthService {
     public ResponseEntity<?> changeUserInfo(UserDTO user) {
         if (user.getUuid() == null)
             throw new RuntimeException("user uuid is empty");
-        var usr = userService.getUser(user.getUuid());
+        var usr = userService.getUserByUuid(user.getUuid());
         if (user.getPassword() != null)
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getUserInfo() != null)
@@ -152,7 +152,7 @@ public class AuthService {
         String refreshTokenString = dto.getRefreshToken();
         if (jwtHelper.validateRefreshToken(refreshTokenString) && refreshTokenRepository.existsById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString))) {
 
-            User user = userService.getUser(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
+            User user = userService.getUserByUuid(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
             String accessToken = jwtHelper.generateAccessToken(user);
 
             return ResponseEntity.ok(new TokenDTO(modelMapper.map(user, UserDTO.class), accessToken, refreshTokenString));
@@ -169,7 +169,7 @@ public class AuthService {
 
             refreshTokenRepository.deleteById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString));
 
-            User user = userService.getUser(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
+            User user = userService.getUserByUuid(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
 
             RefreshToken refreshToken = new RefreshToken();
             refreshToken.setOwner(user);

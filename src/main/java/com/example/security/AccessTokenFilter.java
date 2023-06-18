@@ -33,7 +33,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             Optional<String> accessToken = parseAccessToken(request);
             if(accessToken.isPresent() && jwtHelper.validateAccessToken(accessToken.get())) {
                 UUID userUUID = UUID.fromString(jwtHelper.getUserIdFromAccessToken(accessToken.get()));
-                User user = userService.getUser(userUUID);
+                User user = userService.getUserByUuid(userUUID);
                 UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 upat.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(upat);
