@@ -61,7 +61,7 @@ public class SearchingService {
         } else throw new RuntimeException("UserInfo is not created");
     }
 
-    @Scheduled(fixedDelay = 30_000)
+    @Scheduled(fixedDelay = 5_000)
     public void getNewUserInterlocutor() {
         System.err.println("Searching created");
         Iterable<UserPool> userPools = getUsersList();
@@ -70,7 +70,8 @@ public class SearchingService {
             var userPartnerList = userPoolRepository.findUserInfoByPredicate(userPl.getUserInfo());
             var poolMessagesList = userPartnerList.stream().map(userPool -> {
                 var pMessage = new PoolMessage();
-                pMessage.setUserUuid(userPool.getUserUuid());
+                pMessage.setUserUuid(userPl.getUserUuid());
+                pMessage.setFoundUserUuid(userPool.getUserUuid());
                 pMessage.setFoundUserInfo(userPool.getUserInfo());
                 pMessage.setStatus(MessageStatus.DELIVERED);
                 pMessage.setTimestamp(new Timestamp(new Date().getTime()));

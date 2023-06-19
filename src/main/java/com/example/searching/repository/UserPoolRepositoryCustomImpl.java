@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
@@ -106,7 +107,7 @@ class UserPoolRepositoryCustomImpl implements UserPoolRepositoryCustom {
                 nap:
                 for (var user : result) {
                     for (int i = 0; i < user.getUserInfo().getCharacterAccentuations().size(); i++) {
-                        if(currentUserInterestedAccentuations.get(i) != null && user.getUserInfo().getInterestedCharacterAccentuations().get(i) != null)
+                        if(!Objects.equals(currentUserInterestedAccentuations.get(i), "0") && !Objects.equals(user.getUserInfo().getInterestedCharacterAccentuations().get(i), "0"))
                             if (Integer.parseInt(currentUserAccentuations.get(i)) <
                                     Integer.parseInt(user.getUserInfo().getInterestedCharacterAccentuations().get(i)) ||
                                     Integer.parseInt(currentUserInterestedAccentuations.get(i)) >
